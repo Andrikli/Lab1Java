@@ -1,5 +1,6 @@
 package org.example;
 
+import java.math.BigInteger;
 import java.util.Scanner;
 /**
  * Клас, що представляє число Фібоначчі з його індексом та значенням.
@@ -8,14 +9,14 @@ class FibonacciNumber{
     /** Індекс числа Фібоначчі (починаючи з 1) */
     private int index;
     /** Значення числа Фібоначчі */
-    private long value;
+    private BigInteger value;
     /**
      * Конструктор для створення числа Фібоначчі.
      *
      * @param index Індекс числа у послідовності Фібоначчі.
      * @param value Значення числа Фібоначчі.
      */
-    public FibonacciNumber(int index, long value){
+    public FibonacciNumber(int index, BigInteger value){
         this.index = index;
         this.value = value;
     }
@@ -32,7 +33,7 @@ class FibonacciNumber{
      *
      * @return Значення числа.
      */
-    public long getValue() {
+    public BigInteger getValue() {
         return value;
     }
     /**
@@ -41,8 +42,12 @@ class FibonacciNumber{
      * @return true, якщо число можна записати як куб плюс одиниця, інакше false.
      */
     public boolean cubePlusOne() {
-        long w= Math.round(Math.cbrt(value - 1));
-        return w * w * w+1==value;
+        if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) {
+            return false;
+        }
+        long val = value.longValue();
+        long w= Math.round(Math.cbrt(val - 1));
+        return w * w * w+1==val;
     }
 
 }
@@ -66,21 +71,24 @@ public class Main {
         System.out.println("Введіть кількість чисел Фібоначчі: ");
         int n = sc.nextInt();
         FibonacciNumber[] numbers = new FibonacciNumber[n];
-        int a=1, b=1;
+        BigInteger a= BigInteger.ZERO;
+        BigInteger b= BigInteger.ONE;
         // Генерація чисел Фібоначчі
         for(int i=0;i<n;i++){
-            if(i==0 || i==1){
-                numbers[i] = new FibonacciNumber(i+ 1, 1);
+            if(i==0){
+                numbers[i] = new FibonacciNumber(i+1,BigInteger.ZERO);
+            }else if( i==1){
+                numbers[i] = new FibonacciNumber(i+ 1, BigInteger.ONE);
             }
             else{
-                int c = a + b;
+                BigInteger c = a.add(b);
                 numbers[i]= new FibonacciNumber(i+1, c);
                 a=b;
                 b=c;
             }
         }
         // Вивід усіх чисел Фібоначчі
-        System.out.println("Числа Фібоначі:");
+        System.out.println("Числа Фібоначчі:");
         for(FibonacciNumber num : numbers){
             System.out.println("["+num.getIndex()+"]="+num.getValue());
         }
